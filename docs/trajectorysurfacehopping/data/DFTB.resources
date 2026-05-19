@@ -1,0 +1,10 @@
+dftbdir $DFTBHOME
+scratchdir /path/to/TRAJ_X/scratch
+savedir /path/to/TRAJ_X/restart
+ncpu 1
+nmpi 0
+ncalcs 1
+schedule_scaling 1.000000
+memory 8192
+wfoverlap $SHARC/wfoverlap.x
+wfthres 0.99800

@@ -1,4 +1,5 @@
 .. highlight:: none
+.. _preparing-md:
 
 Preparing for an MD calculation
 ===============================

@@ -1,0 +1,20 @@
+Geometry = xyzFormat {
+   <<< "geom_opt.xyz"
+}
+
+DisplayModes = {
+  PlotModes = 1:-1
+  Animate = Yes
+}
+
+SlaterKosterFiles = Type2FileNames {
+  Prefix = "/home/user/slakos/origin/mio-1-1/"
+  Separator = "-"
+  Suffix = ".skf"
+}
+
+Hessian = {
+  <<< "hessian.out"
+}
+
+InputVersion = 3

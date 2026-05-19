@@ -12,6 +12,7 @@ DFTB+ recipes
    solvation/index.rst
    defect/index.rst
    linresp/index.rst
+   trajectorysurfacehopping/index.rst
    electronicdynamics/index.rst
    parallel/index.rst
    properties/index.rst

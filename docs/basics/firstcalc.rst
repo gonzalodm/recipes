@@ -1,4 +1,6 @@
 .. highlight:: none
+.. _first:
+
 
 ****************************
 First calculation with DFTB+
