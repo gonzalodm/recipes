@@ -4,96 +4,103 @@
 Initial Conditions
 ****************************
 
-Since TSH is a stochastic method that requires many independent simulations, 
-the first step is to generate a set of initial conditions. These initial 
-conditions consist of nuclear positions and velocities that represent an 
-ensemble of the system at the target experimental temperature. 
-In this tutorial we will use the Wigner distribution.
+Since TSH is a stochastic method that requires many independent simulations,
+the first step is to generate a set of initial conditions. These initial
+conditions consist of nuclear positions and velocities that represent an
+ensemble of the system at the target experimental temperature.
+In this tutorial, we will use the Wigner distribution to generate them,
+which requires both the optimized ground state geometry and the vibrational 
+normal modes of the system in order to properly describe the quantum distribution
+of nuclear motion around the equilibrium structure.
 
-The first step is to obtain the optimized structure of the system 
-in its electronic ground state. The keywords required for this type
-of calculation in DFTB+ were introduced in a previous section (:ref:`first`).
+To begin the tutorial, create a main working directory called ``TSHtutorial``
+where all calculations will be performed, and move into this folder. Inside it,
+create a subdirectory named ``00_opt``, where we will perform the ground state
+geometry optimization.
 
-The input file used in this tutorial is shown below::
+.. code-block:: bash
+   :caption: Zero step
 
-   Geometry = xyzFormat {
-         6
+   mkdir TSHtutorial
+   cd TSHtutorial
+   mkdir 00_opt
+   cd 00_opt
 
-         C   -0.00000220531796     -0.00011946224255      0.00824776387043
-         N   -0.00000103715068      0.00011691219994      1.29471395800124
-         H    0.95304286586587     -0.00032942928012     -0.53285864298005
-         H    0.87408459944882      0.00009862593430      1.83976048187255
-         H   -0.87408532560582      0.00034268856534      1.83976697683496
-         H   -0.95303889724023     -0.00010933517691     -0.53286332659912
-   }
-   Driver = GeometryOptimization {
-      Optimizer = Rational {}
-      OutputPrefix = "geom_trj"
-      AppendGeometries = Yes
-      MaxSteps = 100
-   }
-   Hamiltonian {
-      DFTB {
-         SCC = Yes
-         SCCTolerance = 1e-08
-         Charge = 1.0
-         MaxAngularMomentum {
-         N = "p"
-         C = "p"
-         H = "s"
-      }
-      SlaterKosterFiles {
-         Type2FileNames {
-            Prefix = "/home/user/slakos/origin/mio-1-1/"
-            Separator = "-"
-            Suffix = ".skf"
-         }
-      }
-      }
-   }
-   ParserOptions {
-      ParserVersion = 12
-   }
-   Parallel {
-      UseOmpThreads = Yes
-   }
-   Analysis {
-      CalculateForces = Yes
-   }
-   Options {
-      WriteAutotestTag = Yes
-   }
-
-Using the optimized geometry, we next compute the vibrational 
-frequencies and normal modes (see section :ref:`preparing-md`). 
-
-For this step, two inputs files are required:
+The input file for the optimization is shown below:
+[Input: `recipes/docs/trajectorysurfacehopping/data/00_opt/`]
 
 .. tab-set::
 
    .. tab-item:: dftb_in.hsd
 
-      .. literalinclude:: data/dftb_in.hsd
+      .. literalinclude:: data/00_opt/dftb_in.hsd
          :caption: dftb_in.hsd
+         :emphasize-lines: 28
+
+Before running the calculation, make sure that the highlighted line
+in the input file points to the correct directory containing the 
+``mio-1-1`` parameters. The keywords required for this type of
+calculation in DFTB+ were introduced in a previous section (:ref:`first`).
+
+Using the optimized geometry, we next compute the vibrational
+frequencies and normal modes (see section :ref:`preparing-md`).
+For this step, we create a new subdirectory inside the main
+folder called ``01_freq`` and copy into it the optimized geometry obtained
+in the previous step:
+
+.. code-block:: bash
+   :caption: First step
+  
+   cd ../
+   mkdir 01_freq
+   cd 01_freq
+   cp ../00_opt/geom_opt.xyz .
+
+For this step, two inputs files are required:
+[Input: `recipes/docs/trajectorysurfacehopping/data/01_freq/`]
+
+.. tab-set::
+
+   .. tab-item:: dftb_in.hsd
+
+      .. literalinclude:: data/01_freq/dftb_in.hsd
+         :caption: dftb_in.hsd
+         :emphasize-lines: 19
 
    .. tab-item:: modes_in.hsd
 
-      .. literalinclude:: data/modes_in.hsd
+      .. literalinclude:: data/01_freq/modes_in.hsd
          :caption: modes_in.hsd
+         :emphasize-lines: 11
 
-Once these calculations have completed successfully, we proceed to
-generate a `Molden` file. This can be done by running the following
+Once these calculations have finished successfully, we proceed to
+generate a `Molden` file. To do this, create a new folder named ``02_initconds`` 
+and copy into it the ``geom_opt.xyz`` and ``vibrations.tag`` files.
+
+.. code-block:: bash
+   :caption: Second step
+
+    cd ../
+    mkdir 02_initconds
+    cd 02_initconds
+    cp ../01_freq/geom_opt.xyz .
+    cp ../01_freq/vibrations.tag .
+
+The Molden file can then be generated by running the following
 script (provided in the repository downloaded earlier, see :ref:`tsh-install`)::
 
-   dftb_mode.py -g geom_opt.xyz -v vibrations.tag
+   python $SHARC/get_molden.py -g geom_opt.xyz -v vibrations.tag
 
-Once the script has run successfully, a file named ``freq.out.molden`` should be generated. We can then use this file to produce 100 initial conditions at 300 K::
+Once the script has run successfully, a file named ``freq.out.molden`` should be generated.
+We can then use this file to produce 100 initial conditions at 300 K::
 
    $SHARC/wigner.py freq.out.molden -n 100 -t 300 -x
 
-   split.py initconds
+   python $SHARC/split_init.py initconds
 
-At this point, you should have a set of initial conditions in SHARC format, consisting of position files (``geom_X``) and velocity files (``veloc_X``), with ``X`` ranging from 0 to 100.
+At this point, you should have a set of initial conditions in SHARC format,
+consisting of position files (``geom_X``) and velocity files (``veloc_X``),
+with ``X`` ranging from 0 to 100.
 
 .. tip::
 

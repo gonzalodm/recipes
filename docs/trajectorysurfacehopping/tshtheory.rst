@@ -13,7 +13,7 @@ The electronic dynamics is governed by the time-dependent Schrödinger equation:
 
 The electronic wavefunction is expanded in a basis of adiabatic states, and its time evolution determines how the populations of these states change during the dynamics. 
 
-.. math:: \dot{c}_i(t) = -\dfrac{i}{\hbar} E_i c_i(t) -\sum_j c_j(t) \overrightarrow{\sigma}_{ij}
+.. math:: \dot{c}_i(t) = -\dfrac{i}{\hbar} E_i c_i(t) -\sum_j c_j(t) \overrightarrow{\sigma}_{ij} \overrightarrow{v}
    :label: POPE
 
 The nuclei are propagated classically on the current (or active) electronic state i:
@@ -23,11 +23,11 @@ The nuclei are propagated classically on the current (or active) electronic stat
 
 When two electronic states come close in energy, nonadiabatic couplings allow population transfer between them. At each time step, a hopping probability is computed, and the system may switch from one electronic state to another according to the following equation: 
 
-.. math:: g_{ij} = \dfrac{2\operatorname{Re}(c_i^*c_j\overrightarrow{\sigma}_{ij})}{|c_i|^2} \Delta t
+.. math:: P_{ij} = \dfrac{2\operatorname{Re}(c_i^*c_j\overrightarrow{\sigma}_{ij}\overrightarrow{v})}{|c_i|^2} \Delta t
    :label: PROB
 
 This probability is then compared with a random number to see if the system will remain on the potential energy surface i or it will switch to another state j. If a hop occurs, the nuclear velocities are adjusted to conserve total energy.
 
-For further details on the methodology, the reader is referred to Refs. XXX.
+For further details on the methodology, the reader is referred to Ref `TSH <https://wires.onlinelibrary.wiley.com/doi/10.1002/wcms.64>`_.
 
 By averaging over many trajectories, TSH provides access to observables such as excited-state lifetimes, relaxation pathways, and photoproduct distributions.

@@ -9,34 +9,38 @@ Non Adiabatic Molecular Simulations (NAMD)
 ******************************************
 
 In this section, we will explain how to set up the files required
-to run a NAMD simulation using TSH copuled with TD-DFTB. To begin,
-create a directory named ``namd`` and navigate into it::
+to run a NAMD simulation using TSH copuled with TB-TDDFTB. To begin,
+create a directory named ``04_namd`` inside the main folder and navigate into it:
 
-   mkdir namd
-
-   cd namd
+.. code-block:: bash
+   :caption: Fourth step
+  
+   cd ../
+   mkdir 04_namd
+   cd 04_namd
 
 Inside this directory, we need to generate a separate folder for 
-each initial condition used in the TSH simulations. These folders
-should be named ``TRAJ_X`` where ``X`` ranges from 0 to 100.::
+each initial condition used in the TSH simulations. For simplicity, 
+this tutorial will demonstrate the procedure for a single initial condition.
+The same workflow can then be applied to all the remaining initial conditions.
 
-   mkdir TRAJ_0 TRAJ_1 ... TRAJ_100
+.. code-block:: bash
+
+   mkdir TRAJ_X
+   cd TRAJ_X
 
 Now, copy the geometry and velocity files generated previously. 
-Make sure to copy the right files into its respective directory::
+Make sure to copy the right files into its respective directory:
 
-   cp ../geom_0 TRAJ_0/geom
-   cp ../veloc_0 TRAJ_0/veloc
-          .
-          .
-          .
-   cp ../geom_100 TRAJ_100/geom
-   cp ../veloc_100 TRAJ_100/veloc
+.. code-block:: bash
+
+   cp ../../02_initconds/geom_X TRAJ_X/geom
+   cp ../../02_initconds/veloc_X TRAJ_X/veloc
 
 Next, we need to prepare the input files for the TSH dynamics 
-within each ``TRAJ_X`` directory:
+[Input: `recipes/docs/trajectorysurfacehopping/data/04_namd/`]
 
-.. literalinclude:: data/input
+.. literalinclude:: data/04_namd/input
    :emphasize-lines: 7-9, 11, 14, 15
 
 Most of keywords used in this input file are described in detail
@@ -66,9 +70,10 @@ different seed to ensure statistically independent simulations.
 
 ``stepsize``: This defines the time step of the simulation, also in fs. 
 
-Next, inside each ``TRAJ_X`` directory, we need to create two 
-subdirectories::
+Next, we need to create three subdirectories:
    
+.. code-block:: bash
+
    mkdir restart scratch QM
 
 The ``restart`` folder is used to store restart files generated 
@@ -76,17 +81,19 @@ during the simulation. The ``scratch`` folder will be used by DFTB+
 to run every single point. The ``QM`` folder contains the input 
 templates for the DFTB+ calculations. The following two input files
 are required inside the ``QM`` folder:
+[Input: `recipes/docs/trajectorysurfacehopping/data/04_namd/`]
 
 .. tab-set::
 
    .. tab-item:: DFTB.template
 
-      .. literalinclude:: data/DFTB.template
+      .. literalinclude:: data/04_namd/DFTB.template
          :caption: DFTB.template
+         :emphasize-lines: 13
 
    .. tab-item:: DFTB.resources
 
-      .. literalinclude:: data/DFTB.resources
+      .. literalinclude:: data/04_namd/DFTB.resources
          :caption: DFTB.resources
          :emphasize-lines: 2, 3
 
@@ -129,7 +136,7 @@ main script used to run the simulation::
    # Number Of processors and threads
    export OMP_NUM_THREADS=1
    export MPI_NUM_TASK=1
-   export CALCS_SAME_TIME=3
+   export CALCS_SAME_TIME=1
 
    # Directory of the run
    PRIMARY_DIR=${PWD}
@@ -139,14 +146,26 @@ main script used to run the simulation::
    $SHARC/sharc.x input
 
 At this point, the directory is fully set up to run the simulation. Your ``TRAJ_X`` folder
-should look like the following::
+should look like the following:
+
+.. code-block:: bash
 
    $ pwd
-   /home/user/namd/TRAJ_X
+   /home/user/TSHtutorial/04_namd/TRAJ_X
 
    $ ls
    input geom veloc run.sh QM/ restart/ scratch/
 
    $ ls QM/
    DFTB.template DFTB.resources runQM.sh
+
+.. tip::
+   Try to run several TSH simulations using different initial conditions.
+   Although analyzing a single trajectory can provide
+   insight into the reaction mechanism of the system, meaningful
+   physical observables within TSH framework are extracted only 
+   by averaging over an ensemble of simulations.
+
+.. warning::
+   Remeber to change the seed in the input for every TSH simulation.
 

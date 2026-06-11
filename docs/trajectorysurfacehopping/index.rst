@@ -14,5 +14,6 @@ In this tutorial, we will demonstrate how to perform TSH simulations with time-d
    installation.rst
    introduction.rst
    initialconditions.rst
+   initialexcitation.rst
    namd.rst
    analysis.rst

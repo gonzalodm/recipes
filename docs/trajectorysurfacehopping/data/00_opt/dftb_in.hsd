@@ -1,0 +1,46 @@
+Geometry = xyzFormat {
+   6
+
+   C   -0.00000220531796     -0.00011946224255      0.00824776387043
+   N   -0.00000103715068      0.00011691219994      1.29471395800124
+   H    0.95304286586587     -0.00032942928012     -0.53285864298005
+   H    0.87408459944882      0.00009862593430      1.83976048187255
+   H   -0.87408532560582      0.00034268856534      1.83976697683496
+   H   -0.95303889724023     -0.00010933517691     -0.53286332659912
+}
+Driver = GeometryOptimization {
+   Optimizer = Rational {}
+   OutputPrefix = "geom_opt"
+   MaxSteps = 100
+}
+Hamiltonian {
+   DFTB {
+      SCC = Yes
+      SCCTolerance = 1e-08
+      Charge = 1.0
+      MaxAngularMomentum {
+      N = "p"
+      C = "p"
+      H = "s"
+   }
+   SlaterKosterFiles {
+      Type2FileNames {
+         Prefix = "/home/user/slakos/origin/mio-1-1/"
+         Separator = "-"
+         Suffix = ".skf"
+      }
+   }
+   }
+}
+ParserOptions {
+   ParserVersion = 12
+}
+Parallel {
+   UseOmpThreads = Yes
+}
+Analysis {
+   CalculateForces = Yes
+}
+Options {
+   WriteAutotestTag = Yes
+}

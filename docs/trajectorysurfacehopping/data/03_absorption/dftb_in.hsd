@@ -1,0 +1,49 @@
+Geometry = xyzFormat {
+   <<< "geom.xyz"
+}
+Driver = {}
+Hamiltonian {
+  DFTB {
+    SCC = Yes
+    SCCTolerance = 1e-10
+    Charge = 1.0
+    MaxAngularMomentum {
+      N = "p"
+      C = "p"
+      H = "s"
+    }
+    SlaterKosterFiles {
+      Type2FileNames {
+        Prefix = "/home/user/slakos/origin/mio-1-1/"
+        Separator = "-"
+        Suffix = ".skf"
+      }
+    }
+  }
+}
+
+ExcitedState {
+  Casida {
+    NrOfExcitations = 10
+    StateOfInterest = 1
+    Symmetry = Singlet
+    Diagonalizer {
+      Stratmann {}
+    }
+  }
+}
+
+ParserOptions {
+  ParserVersion = 12
+}
+Parallel {
+  UseOmpThreads = Yes
+}
+Analysis {
+  WriteEigenvectors = Yes
+  CalculateForces = Yes
+}
+Options {
+  WriteAutotestTag = Yes
+  WriteDetailedXml = Yes
+}
